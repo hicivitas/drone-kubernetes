@@ -4,6 +4,10 @@ if [ -z ${PLUGIN_NAMESPACE} ]; then
   PLUGIN_NAMESPACE="default"
 fi
 
+if [ -z ${PLUGIN_RESOURCE_TYPE} ]; then
+  PLUGIN_RESOURCE_TYPE="deployment"
+fi
+
 if [ -z ${PLUGIN_KUBERNETES_USER} ]; then
   PLUGIN_KUBERNETES_USER="default"
 fi
@@ -39,10 +43,10 @@ for DEPLOY in ${DEPLOYMENTS[@]}; do
   echo Deploying to $KUBERNETES_SERVER
   for CONTAINER in ${CONTAINERS[@]}; do
     if [[ ${PLUGIN_FORCE} == "true" ]]; then
-      kubectl -n ${PLUGIN_NAMESPACE} set image deployment/${DEPLOY} \
+      kubectl -n ${PLUGIN_NAMESPACE} set image ${PLUGIN_RESOURCE_TYPE}/${DEPLOY} \
         ${CONTAINER}=${PLUGIN_REPO}:${PLUGIN_TAG}FORCE
     fi
-    kubectl -n ${PLUGIN_NAMESPACE} set image deployment/${DEPLOY} \
+    kubectl -n ${PLUGIN_NAMESPACE} set image ${PLUGIN_RESOURCE_TYPE}/${DEPLOY} \
       ${CONTAINER}=${PLUGIN_REPO}:${PLUGIN_TAG} --record
   done
 done
